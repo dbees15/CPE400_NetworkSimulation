@@ -49,6 +49,7 @@ def bestpath(graph: nx.Graph,start_index : int,target_index : int):
 
 #==========Graph Generation and Simulation Functions==========
 
+#Public method generate_graph_6
 #generate graph with 6 nodes with random powers in range 100 to maxpower
 #Parameters:
 #   maxpower: int : max power a node can have
@@ -71,6 +72,7 @@ def generate_graph_6(maxpower : int):
     g.add_edge(4,5)
     return g
 
+#Public method generate_graph_8
 #generate graph with 8 nodes with random powers in range 100 to maxpower
 #Parameters:
 #   maxpower: int : max power a node can have
@@ -98,7 +100,7 @@ def generate_graph_8(maxpower : int):
     g.add_edge(6,7)
     return g
 
-
+#Public method generate_graph_10
 #generate graph with 10 nodes with random powers in range 100 to maxpower
 #Parameters:
 #   maxpower: int : max power a node can have
@@ -131,6 +133,7 @@ def generate_graph_10(maxpower : int):
     g.add_edge(8,9)
     return g
 
+#Public method generate_graph_12
 #generate graph with 12 nodes with random powers in range 100 to maxpower
 #Parameters:
 #   maxpower: int : max power a node can have
