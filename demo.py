@@ -1,4 +1,3 @@
-import networkx
 import routing
 from datetime import datetime
 

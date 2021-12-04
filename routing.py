@@ -12,9 +12,9 @@ MINNUM = 0
 #   start_index: the starting node index
 def _breadthfirstsearch(gr: nx.Graph,start_index):    #return shortest path list for all nodes
     shortest_path_list = []
-    for n in range(0,gr.number_of_nodes()):
-        path = nx.shortest_path(gr,source=start_index,target=n)
-        shortest_path_list.append(len(path))
+    for n in range(0,gr.number_of_nodes()): #iterate through all nodes in graph
+        path = nx.shortest_path(gr,source=start_index,target=n) #find shortest path to node
+        shortest_path_list.append(len(path))    #append shortest path length to list
     return shortest_path_list
 
 #Private method _heuristicgraph
@@ -25,13 +25,13 @@ def _breadthfirstsearch(gr: nx.Graph,start_index):    #return shortest path list
 #   target_index: target node index
 def _heuristicgraph(graph : nx.Graph,source_index,destination_index):
     new_graph = nx.Graph(graph)
-    for i in range(0,graph.number_of_nodes()):
-        distance = _breadthfirstsearch(graph,destination_index)[i]
+    for i in range(0,graph.number_of_nodes()):  #iterate through all nodes
+        distance = _breadthfirstsearch(graph,destination_index)[i]  #determine distances from destination to rest of nodes
         #print(f"{i}: "+str(distance))
-        if graph.nodes[i]['power'] != 0:
+        if graph.nodes[i]['power'] != 0:    #if power is not zero, use heuristic
             new_graph.nodes[i]['power'] = 1/(graph.nodes[i]['power'] / distance)
         else:
-            new_graph.nodes[i]['power'] = float('inf')
+            new_graph.nodes[i]['power'] = float('inf')  #if power is 0. set weight to infinity
     return new_graph
 
 #Public method bestpath
@@ -42,9 +42,9 @@ def _heuristicgraph(graph : nx.Graph,source_index,destination_index):
 #   target_index: target node index
 def bestpath(graph: nx.Graph,start_index : int,target_index : int):
     h = _heuristicgraph(graph,start_index,target_index)
-    def heuristic(a,b,G=h):
+    def heuristic(a,b,G=h): #use custom heuristic function for a*
         return (G.nodes[a]['power'])
-    path = nx.astar_path(h,start_index,target_index,heuristic)
+    path = nx.astar_path(h,start_index,target_index,heuristic)  #use a* to find path using custom heuristic
     return path
 
 #==========Graph Generation and Simulation Functions==========
@@ -208,7 +208,7 @@ def simulate(graph_generator, maxpower, reroute : bool,source_index,destination_
     best = bestpath(g,source_index,destination_index)
     while True: #Transmit until there is no path
         while _can_transmit(best):
-            for n in range(1,len(best)-1):
+            for n in range(0,len(best)-1):
                 g.nodes[best[n]]['power'] -= transmission_cost  #update node power levels
             packets_sent+=1
         _remove_dead()
