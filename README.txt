@@ -1,5 +1,5 @@
 Requires Python3 and module NetworkX
-Install with command:
+Install networkx with command:
 	pip install networkx
 
-Run the demo with command: Python3 demo.py
+Run the demo with command: python3 demo.py

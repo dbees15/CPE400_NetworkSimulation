@@ -1,7 +1,16 @@
 import networkx
 import routing
-import random
 from datetime import datetime
+
+
+#Public method tests
+#Runs simulation a number of times and prints the average of the simulation results with rerouting enabled and disabled
+#Parameters:
+#   graph_generator: function : function of what graph should be used for simulation
+#   targetnode: int : index of target node
+#   nodenum: int : number of nodes in graph, should correspond to graph_generator
+#   max_power: int : max power a node can have
+#   sim_num: int : number of times to run simulation
 
 def tests(graph_generator,targetnode,nodenum,max_power,sim_num):
     print(f"\n===Tests for {nodenum} node graph===")
@@ -10,8 +19,8 @@ def tests(graph_generator,targetnode,nodenum,max_power,sim_num):
     resultlist = [] #list of packets sent for each sim
     rl = []
     for i in range(0,sim_num):  #run simulation sim_num number of times
-        result,reroute_num = routing.simulate(graph_generator,max_power,True,0,targetnode,100)
-        resultlist.append(result)
+        result,reroute_num = routing.simulate(graph_generator,max_power,True,0,targetnode,100)  #simulation function
+        resultlist.append(result)   #save simulation results
         rl.append(reroute_num)
 
     average = sum(resultlist) / len(resultlist) #take averages of results
@@ -23,8 +32,6 @@ def tests(graph_generator,targetnode,nodenum,max_power,sim_num):
 
     resultlist.clear()  #clean up
     rl.clear()
-
-
 
     #run sim with reroute=False
     resultlist = [] #list of packets sent for each sim

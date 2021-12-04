@@ -49,6 +49,28 @@ def bestpath(graph: nx.Graph,start_index : int,target_index : int):
 
 #==========Graph Generation and Simulation Functions==========
 
+#generate graph with 6 nodes with random powers in range 100 to maxpower
+#Parameters:
+#   maxpower: int : max power a node can have
+#maxpower should be multiple of 100 - such as 1000,1100,2000
+def generate_graph_6(maxpower : int):
+    maxpower/=100
+    g = nx.Graph()
+    for x in range(0,6):
+        g.add_node(x,power=(random.randint(1,maxpower))*100)
+    #add edges
+    g.add_edge(0,1)
+    g.add_edge(0,2)
+    g.add_edge(1,3)
+    g.add_edge(1,4)
+    g.add_edge(1,2)
+    g.add_edge(2,3)
+    g.add_edge(2,4)
+    g.add_edge(3,5)
+    g.add_edge(3,4)
+    g.add_edge(4,5)
+    return g
+
 #generate graph with 8 nodes with random powers in range 100 to maxpower
 #Parameters:
 #   maxpower: int : max power a node can have
@@ -76,6 +98,11 @@ def generate_graph_8(maxpower : int):
     g.add_edge(6,7)
     return g
 
+
+#generate graph with 10 nodes with random powers in range 100 to maxpower
+#Parameters:
+#   maxpower: int : max power a node can have
+#maxpower should be multiple of 100 - such as 1000,1100,2000
 def generate_graph_10(maxpower : int):
     maxpower/=100
     g = nx.Graph()
@@ -104,6 +131,10 @@ def generate_graph_10(maxpower : int):
     g.add_edge(8,9)
     return g
 
+#generate graph with 12 nodes with random powers in range 100 to maxpower
+#Parameters:
+#   maxpower: int : max power a node can have
+#maxpower should be multiple of 100 - such as 1000,1100,2000
 def generate_graph_12(maxpower : int):
     maxpower/=100
     g = nx.Graph()
@@ -138,26 +169,10 @@ def generate_graph_12(maxpower : int):
     return g
 
 
-def generate_graph_6(maxpower : int):
-    maxpower/=100
-    g = nx.Graph()
-    for x in range(0,6):
-        g.add_node(x,power=(random.randint(1,maxpower))*100)
-    #add edges
-    g.add_edge(0,1)
-    g.add_edge(0,2)
-    g.add_edge(1,3)
-    g.add_edge(1,4)
-    g.add_edge(1,2)
-    g.add_edge(2,3)
-    g.add_edge(2,4)
-    g.add_edge(3,5)
-    g.add_edge(3,4)
-    g.add_edge(4,5)
-    return g
 
 #Public method simulate
 #Returns number of packets were able to be transmitted from source index of a random generated graph, to destination
+#   also returns total number of reroutes performed
 #Parameters:
 #   graph generator: function : function to generate a graph
 #   maxpower: int : max power a node can have
@@ -168,18 +183,18 @@ def generate_graph_6(maxpower : int):
 
 def simulate(graph_generator, maxpower, reroute : bool,source_index,destination_index,transmission_cost):
     g = graph_generator(maxpower)
-    def _can_transmit(path):
+    def _can_transmit(path):    #determine if a transmission is possible
         for i in path:
             if g.nodes[i]['power'] - transmission_cost < 0:
                 return False
         return True
 
-    def _remove_dead():
+    def _remove_dead(): #remove dead nodes from graph by setting power to negative infinity
         for i in range(0,g.number_of_nodes()):
             if g.nodes[i]['power'] <=0 :
                 g.nodes[i]['power'] = MINNUM
 
-    def _no_path(path):
+    def _no_path(path): #returns true if one of the nodes in the path has the value negative infinity
         for n in path:
             if g.nodes[n]['power'] == MINNUM:
                 return True
@@ -188,16 +203,16 @@ def simulate(graph_generator, maxpower, reroute : bool,source_index,destination_
     rerouted_num = 0
     packets_sent = 0
     best = bestpath(g,source_index,destination_index)
-    while True:
+    while True: #Transmit until there is no path
         while _can_transmit(best):
-            for n in range(0,len(best)-1):
-                g.nodes[best[n]]['power'] -= transmission_cost
+            for n in range(1,len(best)-1):
+                g.nodes[best[n]]['power'] -= transmission_cost  #update node power levels
             packets_sent+=1
         _remove_dead()
-        best = bestpath(g,source_index,destination_index)
-        if not reroute:
+        best = bestpath(g,source_index,destination_index)   #find new best path
+        if not reroute: #break if reroute is false
             break
-        if _no_path(best):
+        if _no_path(best):  #break if best path is invalid
             break
         rerouted_num += 1
-    return packets_sent,rerouted_num
+    return packets_sent,rerouted_num    #return number of packets sent and total number of reroutes
